@@ -39,6 +39,16 @@ resource "yandex_vpc_security_group" "db_access" {
     security_group_id = yandex_vpc_security_group.app_sg.id
   }
 
+  dynamic "ingress" {
+    for_each = var.mysql_public_access ? [1] : []
+    content {
+      description    = "MySQL from internet (public access)"
+      protocol       = "TCP"
+      port           = 3306
+      v4_cidr_blocks = var.mysql_allowed_cidr_blocks
+    }
+  }
+
   egress {
     description    = "All outgoing traffic"
     protocol       = "ANY"
@@ -64,7 +74,7 @@ resource "yandex_mdb_mysql_cluster" "mysql57" {
   host {
     zone             = local.subnet_zone
     subnet_id        = local.subnet_id
-    assign_public_ip = false
+    assign_public_ip = var.mysql_public_access
     priority         = 100
     backup_priority  = 10
   }

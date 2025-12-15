@@ -50,6 +50,23 @@ output "ssh_connection_command" {
   value       = "ssh -i ${var.ssh_private_key_path} ubuntu@${yandex_compute_instance.app.network_interface[0].nat_ip_address}"
 }
 
+output "mysql_connection_info" {
+  description = "Информация для подключения к MySQL"
+  value = {
+    fqdn          = yandex_mdb_mysql_cluster.mysql57.host[0].fqdn
+    database      = yandex_mdb_mysql_database.dostavimvse.name
+    username      = yandex_mdb_mysql_user.dbuser.name
+    port          = 3306
+    public_access = var.mysql_public_access
+  }
+}
+
+output "mysql_connection_string" {
+  description = "Строка подключения к MySQL (команда mysql)"
+  value       = "mysql -h ${yandex_mdb_mysql_cluster.mysql57.host[0].fqdn} -P 3306 -u ${yandex_mdb_mysql_user.dbuser.name} -p ${yandex_mdb_mysql_database.dostavimvse.name}"
+  sensitive   = false
+}
+
 output "application_config" {
   description = "Конфигурация для application.properties"
   value = {

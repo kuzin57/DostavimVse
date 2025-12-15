@@ -66,3 +66,15 @@ variable "db_password" {
   default     = "sdjchdscnhsdn&77"
 }
 
+variable "mysql_public_access" {
+  description = "Включить публичный доступ к MySQL (assign_public_ip = true)"
+  type        = bool
+  default     = true
+}
+
+variable "mysql_allowed_cidr_blocks" {
+  description = "CIDR блоки для доступа к MySQL из интернета (если mysql_public_access = true). По умолчанию разрешен доступ отовсюду (0.0.0.0/0)"
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+}
+
